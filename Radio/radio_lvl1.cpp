@@ -36,25 +36,13 @@ __noreturn
 static void rLvl1Thread(void *arg) {
     chRegSetThreadName("rLvl1");
     while(true) {
-        Radio.TaskReceiverManyByChannel();
-//        chThdSleepMilliseconds(999);
-//        switch(App.Mode) {
-//            case modeTx:
-//                if(Radio.MustTx) Radio.TaskTransmitter();
-//                else Radio.TryToSleep(450);
-//                break;
-//
-//            case modePlayer:
-////                Radio.TaskReceiverSingle(); // Rx part
-////                Radio.TaskFeelEachOtherMany();
-//                break;
-//        } // switch
+        Radio.TaskTransmitter();
     } // while true
 }
 
 void rLevel1_t::TaskTransmitter() {
 //    CC.SetChannel(ID2RCHNL(App.ID));
-    CC.SetChannel(RCHNL_COMMON);
+//    CC.SetChannel(RCHNL_COMMON);
     PktTx.DWord32 = THE_WORD;
     DBG1_SET();
     CC.Transmit(&PktTx);
@@ -208,8 +196,7 @@ uint8_t rLevel1_t::Init() {
     if(CC.Init() == OK) {
         CC.SetTxPower(CC_Pwr0dBm);
         CC.SetPktSize(RPKT_LEN);
-//        CC.SetChannel(ID2RCHNL(App.ID));
-//        CC.EnterPwrDown();
+        CC.SetChannel(0);
         // Thread
         PThd = chThdCreateStatic(warLvl1Thread, sizeof(warLvl1Thread), HIGHPRIO, (tfunc_t)rLvl1Thread, NULL);
         return OK;
