@@ -13,6 +13,7 @@
 #include "evt_mask.h"
 #include "board.h"
 #include "pill.h"
+#include "led.h"
 
 // ==== Constants and default values ====
 #define ID_MIN                  1
@@ -41,3 +42,4 @@ public:
 };
 
 extern App_t App;
+extern LedRGBwPower_t Led;

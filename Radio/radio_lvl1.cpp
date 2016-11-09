@@ -36,7 +36,8 @@ __noreturn
 static void rLvl1Thread(void *arg) {
     chRegSetThreadName("rLvl1");
     while(true) {
-        Radio.TaskTransmitter();
+//        Radio.TaskTransmitter();
+        Radio.TaskReceiverManyByChannel();
     } // while true
 }
 
@@ -84,13 +85,22 @@ void rLevel1_t::TaskReceiverManyByChannel() {
     for(int32_t i = RCHNL_MIN; i <= RCHNL_MAX; i++) {
         CC.SetChannel(i);
         uint8_t RxRslt = CC.Receive(27, &PktRx, &Rssi);   // Double pkt duration
+        Color_t Clr;
         if(RxRslt == OK) {
             Uart.Printf("Ch=%u; Rssi=%d\r", i, Rssi);
-            App.SignalEvt(EVT_RX);
-            TryToSleep(999);
+            Clr = clWhite;
+            if     (Rssi < -100) Clr = clRed;
+            else if(Rssi < -90) Clr = clYellow;
+            else if(Rssi < -80) Clr = clGreen;
+            else if(Rssi < -70) Clr = clCyan;
+            else if(Rssi < -60) Clr = clBlue;
+            else if(Rssi < -50) Clr = clMagenta;
+            Led.SetColor(Clr);
+            chThdSleepMilliseconds(360);
         }
+        Led.SetColor(clBlack);
     } // for i
-    TryToSleep(270);
+
 }
 
 void rLevel1_t::TaskFeelEachOtherSingle() {

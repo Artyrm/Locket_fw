@@ -9,7 +9,6 @@
 #include "SimpleSensors.h"
 #include "buttons.h"
 #include "board.h"
-#include "led.h"
 #include "vibro.h"
 #include "beeper.h"
 #include "Sequences.h"
